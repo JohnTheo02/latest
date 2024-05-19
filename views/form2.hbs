@@ -1,0 +1,33 @@
+<body>
+    <form class="form" action="/form2/submit/:id" method="POST">
+        <legend class="inner-header">Πληροφορίες βλάβης</legend>
+
+        <input type="text" id="class_name" name="class_name" placeholder="Όνομα αίθουσας" required>
+        <br>
+        <input placeholder="Είδος βλάβης" type="text" id="damage_type" name="damage_type" list="damage_list" required>
+        <datalist id="damage_list">
+            <option value="Υδραυλική βλάβη">
+            <option value="Ηλεκτρολογική βλάβη">
+            <option value="Οικοδομική βλάβη">
+            <option value="Άλλο">
+        </datalist>
+        <br>
+        <div class="select">
+            <select name="severity" id="severity" required>
+               <option selected disabled>Σοβαρότητα βλάβης</option>
+               <option value="small">Μικρή</option>
+               <option value="medium">Μέτρια</option>
+               <option value="big">Μεγάλη</option>
+            </select>
+        </div>
+        <br>
+        <textarea class="damage_info" id="damage_info" name="damage_info" placeholder="Περιγραφή βλάβης..." rows="8" wrap="soft"></textarea>
+        <fieldset class="field_file">
+            <label for="file">Επιλέξτε ένα αρχείο:</label><br>
+            <input type="file" id="file_path" name="file_path" accept=".jpg, .jpeg, .png, .pdf">
+        </fieldset>
+        <textarea class="additional_info" id="additional_info" name="additional_info" placeholder="Πρόσθετα σχόλια..." rows="8" wrap="soft"></textarea>
+        <br>
+        <button id="submitButton" type="submit">Υποβολή</button>
+    </form>
+</body>
