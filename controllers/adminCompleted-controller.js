@@ -19,15 +19,25 @@ exports.getAllCompletedForms = function (req, res, next) {
             console.log(err);
             res.status(500).send(err);
         } else {
-            req.completed_forms = completed_forms; // Attach the forms to the request object
             res.render('adminCompleted', {
                 style: "adminCompleted.css",
                 title: "AdminCompleted",
                 script: "adminCompleted.js",
                 admin_id: req.session.loggedUserId,
-                completed_forms:req.completed_forms
-            })
+                completed_forms: completed_forms,
+            });
+            console.log(completed_forms)
         }
     });
 };
-    
+
+exports.changeFormToInComplete = function (req, res) {
+    db.changeFormToInComplete(req.params.id,function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        } else {
+            res.redirect('/admin');
+        }
+    });
+};

@@ -7,9 +7,9 @@ const sql = new db('./model/sqlite/database.sqlite', { fileMustExist: true });
 
 
 exports.submitEvent = function (form, callback) {
-    const stmt = sql.prepare("INSERT INTO damage_reports VALUES (null, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)");
+    const stmt = sql.prepare("INSERT INTO damage_reports VALUES (null, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)");
     try {
-        stmt.run( form.damaged_building, form.class_name, form.damage_type, form.severity, form.damage_info, form.file_path,form.status, form.additional_info,form.user_id,form.location, form.date);
+        stmt.run( form.damaged_building, form.class_name, form.damage_type, form.severity, form.damage_info, form.file_path,form.status,form.status_changed, form.additional_info,form.user_id,form.location, form.date);
     } catch (err) {
         callback(err, null);
     }
@@ -163,11 +163,8 @@ exports.signUp = function (username, password, email, callback) {
                 catch (err) {
                     callback(err, null);
                 }
-                let results = {
-                    result: true,
-                    message: 'User registered'
-                }
-                callback(null, results);
+    
+                callback(null,true );
             }
         }
     }
@@ -294,7 +291,7 @@ exports.getCompletedFormsById = function (user_id,callback) {
 }
 
 exports.getAllCompletedForms = function (callback) {
-    const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE status=0");
+    const stmt = sql.prepare("SELECT * FROM damage_reports WHERE status=0");
     let completed_forms;
     try {
         completed_forms = stmt.all();
@@ -306,7 +303,7 @@ exports.getAllCompletedForms = function (callback) {
 }
 
 exports.getInCompletedFormsById = function (user_id,callback) {
-    const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE user_id = ? AND status=1");
+    const stmt = sql.prepare("SELECT * FROM damage_reports WHERE user_id = ? AND status=1");
     let incompleted_forms;
     try {
         incompleted_forms = stmt.all(user_id);
@@ -319,7 +316,7 @@ exports.getInCompletedFormsById = function (user_id,callback) {
 }
 
 exports.getAllInCompletedForms = function (callback) {
-    const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE status=1");
+    const stmt = sql.prepare("SELECT * FROM damage_reports WHERE status=1");
     let incompleted_forms;
     try {
         incompleted_forms = stmt.all();
@@ -375,14 +372,17 @@ exports.deleteForm = function (id, callback) {
 
 
 exports.changeFormToCompleted = function (id, callback) {
-    const stmt = sql.prepare("UPDATE damage_reports SET status = 0 WHERE id=?");
+    let date = new Date();
+    let currentTime = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    const stmt = sql.prepare("UPDATE damage_reports SET status = 0, status_changed = ? WHERE id = ?");
     try {
-        stmt.run(id);
+        stmt.run(currentTime, id);
     } catch (err) {
-        callback(err, null);
+        return callback(err, null);
     }
     callback(null, true);
 };
+
 
 exports.changeFormToInComplete = function (id, callback) {
     const stmt = sql.prepare("UPDATE damage_reports SET status = 1 WHERE id=?");

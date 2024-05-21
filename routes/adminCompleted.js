@@ -10,7 +10,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', controller.getAllCompletedForms, controller.goToAdminCompletedForms);
-
+router.get('/makeInComplete/:id', controller.changeFormToInComplete);
 
 
 module.exports = router;

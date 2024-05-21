@@ -24,6 +24,7 @@ exports.submitEvent = function (req, res, next) {
         damage_info: req.body.damage_info,
         file_path: req.body.file_path,
         status: "1",
+        status_changed: "null",
         additional_info: req.body.additional_info,
         user_id: req.session.loggedUserId,
         location: 'Δεν καταχωρήθηκε τοποθεσία από τον χρήστη',

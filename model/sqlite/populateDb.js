@@ -16,8 +16,8 @@ for (let i = 0; i < sqlStatements.length; i++) {
 }
 
 // Populate admin table with 2 admin users
-var adminEmail = ['admin', 'theater'];
-var adminPassword = ['admin', 'theater'];
+var adminEmail = ['admin1', 'admin2'];
+var adminPassword = ['admin1', 'admin2'];
 
 for (let i = 0; i < adminEmail.length; i++) {
     let hashedPassword = bcrypt.hashSync(adminPassword[i], 10);

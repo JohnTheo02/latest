@@ -55,7 +55,7 @@ exports.getUsernameById = function (req, res, next) {
 }
 
 exports.changeFormToCompleted = function (req, res) {
-    db.changeFormToCompleted(req.params.id,function (err, result) {
+    db.changeFormToCompleted(req.params.id, function (err, result) {
         if (err) {
             console.log(err);
             res.status(500).send(err);
