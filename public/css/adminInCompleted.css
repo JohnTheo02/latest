@@ -82,7 +82,7 @@ li {
 
 @media (max-width: 768px) {
     body {
-        background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgb(255, 255, 255));
+        background-color: white;
     }
 
     .main {
@@ -101,7 +101,7 @@ li {
 
 @media (max-height: 768px) {
     body {
-        background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgb(255, 255, 255));
+        background-color: white;
         overflow: visible;
     }
 
