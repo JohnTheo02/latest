@@ -22,7 +22,7 @@ exports.tempLocation = function (req, res) {
             res.status(500).send(err);
         }else {
             req.flash('success', 'Η τοποθεσία καταχωρήθηκε με επιτυχία');
-            res.redirect('/form1');
+            res.redirect('/form2');
            
         }
     })

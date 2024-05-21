@@ -28,8 +28,30 @@ exports.getBuildings = function (callback) {
     
 }
 
+exports.getAllBuildings = function (callback) {
+    const stmt = sql.prepare("SELECT name FROM buildingsList");
+    let buildings;
+    try {
+        buildings = stmt.all();
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, buildings);
+    
+}
+
 exports.getClassName = function (callback) {
     const stmt = sql.prepare("SELECT name FROM classesList WHERE departments = selectedDepartment");
+    let classes;
+    try {
+        classes = stmt.all();
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, classes);
+}
+exports.getAllClassNames = function (callback) {
+    const stmt = sql.prepare("SELECT name FROM classesList");
     let classes;
     try {
         classes = stmt.all();
@@ -58,6 +80,7 @@ exports.getSeverity = function (callback) {
     } catch (err) {
         callback(err, null);
     }
+    //console.log(severities);
     callback(null, severities);
 }
 
@@ -100,10 +123,10 @@ exports.signUp = function (username, password, email, callback) {
         }
         callback(null, results);
     }
-    /*else {
-        stmt = sql.prepare("SELECT username FROM admin WHERE username = ? LIMIT 0, 1");
+    else {
+        stmt = sql.prepare("SELECT email FROM admin WHERE email = ? LIMIT 0, 1");
         try {
-            user = stmt.all(username);
+            user = stmt.all(email);
         }
         catch (err) {
             callback(err, null);
@@ -111,10 +134,10 @@ exports.signUp = function (username, password, email, callback) {
         if (user.length > 0) {
             let results = {
                 result: null,
-                message: 'Username already exists'
+                message: 'Email already exists'
             }
             callback(null, results);
-        }*/
+        }
         else {
             stmt = sql.prepare('SELECT email FROM user WHERE email = ? LIMIT 0, 1');
             try {
@@ -149,7 +172,7 @@ exports.signUp = function (username, password, email, callback) {
         }
     }
 
-
+}
 exports.signIn = function (email, callback) {
     // ελέγχουμε αν υπάρχει χρήστης με αυτό το username
     // console.log(username)
@@ -166,11 +189,11 @@ exports.signIn = function (email, callback) {
         let results = {
             id: user.id,
             password: user.password,
-            accountType: 'admin'
+            accountType: 'user'
         };
         callback(null, results)
     }
-    /*else {
+    else {
         stmt = sql.prepare("SELECT id ,email, password FROM admin WHERE email = ? LIMIT 0, 1");
         try {
             user = stmt.all(email);
@@ -183,10 +206,10 @@ exports.signIn = function (email, callback) {
             let results = {
                 id: user.id,
                 password: user.password,
-                accountType: 'user'
+                accountType: 'admin'
             };
             callback(null, results)
-        }*/
+        }
         else {
             let results = {
                 id: null,
@@ -195,7 +218,7 @@ exports.signIn = function (email, callback) {
             callback(null, results);
         }
     }
-
+}
     exports.submitTempLoc = function (location, user_id, callback) {
         const user = sql.prepare("SELECT id FROM user WHERE id = ?").get(user_id);
         if (!user) {
@@ -242,7 +265,7 @@ exports.getUsernameById = function (user_id, callback) {
     
     try {
         result = stmt.get(user_id);
-        console.log(result);
+        //console.log(result);
     } catch (err) {
         callback(err, null);
         return;
@@ -253,6 +276,9 @@ exports.getUsernameById = function (user_id, callback) {
         callback(new Error('User not found'), null);
     }
 };
+
+
+
 
 exports.getCompletedFormsById = function (user_id,callback) {
     const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE user_id = ? AND status=0");
@@ -267,6 +293,18 @@ exports.getCompletedFormsById = function (user_id,callback) {
     
 }
 
+exports.getAllCompletedForms = function (callback) {
+    const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE status=0");
+    let completed_forms;
+    try {
+        completed_forms = stmt.all();
+        //console.log(completed_forms)
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, completed_forms);
+}
+
 exports.getInCompletedFormsById = function (user_id,callback) {
     const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE user_id = ? AND status=1");
     let incompleted_forms;
@@ -279,3 +317,79 @@ exports.getInCompletedFormsById = function (user_id,callback) {
     callback(null, incompleted_forms);
     
 }
+
+exports.getAllInCompletedForms = function (callback) {
+    const stmt = sql.prepare("SELECT id,damaged_building,class_name,damage_type,date FROM damage_reports WHERE status=1");
+    let incompleted_forms;
+    try {
+        incompleted_forms = stmt.all();
+        //console.log(completed_forms)
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, incompleted_forms);
+    
+}
+
+exports.getFormById = function (id, callback) {
+    const stmt = sql.prepare("SELECT * FROM damage_reports WHERE id = ?");
+    let form;
+    try {
+        form = stmt.get(id);
+        //console.log("Retrieved form:", form); // Προσθέστε αυτό τον έλεγχο
+    } catch (err) {
+        callback(err, null);
+        return;
+    }
+    callback(null, form);
+}
+
+exports.updateForm = function (form, callback) {
+    let stmt = sql.prepare("UPDATE damage_reports SET damaged_building = ?, class_name = ?, damage_type = ?, severity = ?, damage_info = ?, file_path = ?, additional_info = ? WHERE id = ?");
+    try {
+        stmt.run(
+            form.damaged_building,
+            form.class_name,
+            form.damage_type,
+            form.severity,
+            form.damage_info,
+            form.file_path,
+            form.additional_info,
+            form.id
+        );
+        callback(null, true); // Μετακίνηση της κλήσης της callback μέσα στο try block
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+exports.deleteForm = function (id, callback) {
+    let stmt = sql.prepare("DELETE FROM damage_reports WHERE id = ?");
+    try {
+        stmt.run(id);
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, true);
+}
+
+
+exports.changeFormToCompleted = function (id, callback) {
+    const stmt = sql.prepare("UPDATE damage_reports SET status = 0 WHERE id=?");
+    try {
+        stmt.run(id);
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, true);
+};
+
+exports.changeFormToInComplete = function (id, callback) {
+    const stmt = sql.prepare("UPDATE damage_reports SET status = 1 WHERE id=?");
+    try {
+        stmt.run(id);
+    } catch (err) {
+        callback(err, null);
+    }
+    callback(null, true);
+};

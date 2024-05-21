@@ -1,15 +1,16 @@
 
 <body>
     <div class="main">
-        <div class="header">
-            <h3>Λογαριασμός</h3>
+        <div class="all">
+            <div class="header">
+            <h3>Προφίλ Χρήστη</h3>
         </div>
 
         <div class="user_tab">
             <div class="circle-icon">
                 <i class="fa-solid fa-user" style="color: #000000;"></i>
             </div>
-            <p>{{user_name}}</p>
+            <p class="username">{{user_name}}</p>
         </div>
 
         <div class="view_forms">
@@ -22,9 +23,11 @@
         </div>
 
         <form class="logout" action="/profile/signout" method="GET">
-        <button class="single_logout"type="submit">Αποσύνδεση</button>
+        <button class="single_logout"type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Αποσύνδεση</button>
         </form>
     </div>
+        </div>
+        
 
 </body>
 

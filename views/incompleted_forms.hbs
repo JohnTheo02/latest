@@ -3,19 +3,22 @@
         <div class="header">
             <h3>Εκκρεμείς Δηλώσεις</h3>
         </div>
-
         <ul>
             {{#each incompleted_forms}}
             <li>
-                <button class="incompleted_form">
+                <div class="incompleted_form">
                     <span class="left-content">
                         Δήλωση {{this.id}} - {{this.date}}<br>
                         Είδος: {{this.damage_type}}<br>
                         Αίθουσα: {{this.class_name}}<br>
                         Κτίριο: {{this.damaged_building}}
                     </span>
-                    <i class="fa-solid fa-greater-than"></i>
-                </button>
+                    <div class="eventButtons" data-date="{{this.date}}">
+                    <div class="editBtnLabel"> <a href="/editform/edit/{{this.id}}"><button class="fa-solid fa-pen"></button></a></div>
+                    <div class="eraseBtnLabel"> <a href="/editform/delete/{{this.id}}"><button class="fa-solid fa-trash-can"></button></a></div>
+                </div>
+                </div>
+                
             </li>
             {{/each}}
         </ul>

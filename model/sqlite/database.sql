@@ -3,7 +3,7 @@ CREATE TABLE "damage_reports" (
     'damaged_building' TEXT,
     'class_name' TEXT NOT NULL,
     'damage_type' TEXT NOT NULL,
-    'severity' TEXT NOT NULL,
+    'severity' TEXT NULL,
     'damage_info' TEXT,
     'file_path' TEXT,
     "status" INTEGER NOT NULL DEFAULT 1,
@@ -51,4 +51,11 @@ CREATE TABLE "temp_location" (
     'user_id' INTEGER NOT NULL,
     "location"    TEXT NOT NULL,
     FOREIGN KEY('user_id') REFERENCES 'user'('id') ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE 'admin'(
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+    'email' TEXT NOT NULL UNIQUE,
+    'password' TEXT NOT NULL
 );

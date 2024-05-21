@@ -13,42 +13,36 @@ exports.goToForm = (req, res) => {
 exports.submitEvent = function (req, res, next) {
     let date = new Date();
     let dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-    
-    db.getLocationById(req.session.loggedUserId, function (err, location) {
+
+
+    let form = {
+        id: req.params.id,
+        damaged_building: req.body.damaged_building,
+        class_name: req.body.class_name,
+        damage_type: req.body.damage_type,
+        severity: req.body.severity,
+        damage_info: req.body.damage_info,
+        file_path: req.body.file_path,
+        status: "1",
+        additional_info: req.body.additional_info,
+        user_id: req.session.loggedUserId,
+        location: 'Δεν καταχωρήθηκε τοποθεσία από τον χρήστη',
+        date: dateString
+    };
+
+    db.submitEvent(form, function (err, result) {
         if (err) {
             console.log(err);
             res.status(500).send(err);
         } else {
-            let form = {
-                id: req.params.id,
-                damaged_building: req.body.damaged_building,
-                class_name: req.body.class_name,
-                damage_type: req.body.damage_type,
-                severity: req.body.severity,
-                damage_info: req.body.damage_info,
-                file_path: req.body.file_path,
-                status: "1",
-                additional_info: req.body.additional_info,
-                user_id: req.session.loggedUserId,
-                location: location && location[0] ? location[0].location : 'Δεν καταχωρήθηκε τοποθεσία από τον χρήστη',
-                date: dateString
-            };
-
-            db.submitEvent(form, function (err, result) {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send(err);
-                } else {
-                    req.flash('success', 'Η βλάβη καταχωρήθηκε με επιτυχία');
-                    res.redirect('/');
-                }
-            });
+            req.flash('success', 'Η βλάβη καταχωρήθηκε με επιτυχία');
+            res.redirect('/');
         }
     });
-};
+}
 
 
-exports.getBuildings = function (req, res,next) {
+exports.getBuildings = function (req, res, next) {
     db.getBuildings(function (err, buildings) {
         if (err) {
             console.log(err);
@@ -65,9 +59,9 @@ exports.getBuildings = function (req, res,next) {
             res.locals.buildings = building;
             next();
         }
-        
+
     });
-    
+
 }
 
 exports.getClassName = function (req, res, next) {
@@ -87,12 +81,12 @@ exports.getClassName = function (req, res, next) {
             res.locals.classes = class_;
             next();
         }
-       
+
     });
-    
+
 }
 
-exports.getDamageType = function (req, res,next) {
+exports.getDamageType = function (req, res, next) {
     db.getDamageType(function (err, types) {
         if (err) {
             console.log(err);
@@ -109,19 +103,19 @@ exports.getDamageType = function (req, res,next) {
             res.locals.types = type;
             next();
         }
-        
+
     });
-    
+
 }
 
-exports.getSeverity = function (req, res,next) {
+exports.getSeverity = function (req, res, next) {
     db.getSeverity(function (err, severities) {
         if (err) {
             console.log(err);
             res.status(500).send(err);
         }
         else {
-            let severity= [];
+            let severity = [];
             for (let i = 0; i < severities.length; i++) {
                 if (severities[i]) {
                     severity.push(severities[i]);
@@ -130,28 +124,10 @@ exports.getSeverity = function (req, res,next) {
             //console.log(severity)
             res.locals.severities = severity;
             next();
-        
+
         }
-        
+
 
     });
-   
-}
 
-exports.getLocationById = function (req, res,next) {
-    db.getLocationById(req.session.loggedUserId,function (err, location) {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        }
-        else {
-            //console.log(severity)
-            res.locals.location = location;
-            next();
-        
-        }
-        
-
-    });
-   
 }

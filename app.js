@@ -1,29 +1,20 @@
-const express = require('express')
+const express = require('express');
 const handlebars = require('express-handlebars');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-
 const SQLiteStore = require('connect-sqlite3')(session); // store for sessions
 require('dotenv').config();
 
-const app = express()
+const app = express();
 const index_router = require('./routes/index.js');
 
 app.use(express.static(__dirname + '/public'));
 
 app.use(express.urlencoded({ extended: false }));
-
-// app.use((req, res, next) => {
-//     console.log(req.locals);
-//     res.locals.userId = req.session.loggedUserId;
-//     next();
-// })
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 
 app.use(session({
@@ -36,31 +27,24 @@ app.use(session({
     },
     store: new SQLiteStore({ db: 'session.sqlite', dir: './model/sessions' })
 }));
-app.use(flash())
+
+app.use(flash());
+
 app.engine('hbs', handlebars.engine({
     extname: '.hbs',
     helpers: require('./controllers/helpers.js'),
 }));
 
+app.set('view engine', 'hbs');
+app.set('views', './views');
 
-app.set('view engine', 'hbs')
-app.set('views', './views')
-
-app.use('/', index_router);
-
-app.use(function (req, res, next) {
-    console.log(req.locals.error_messages);
-    res.locals.success_messages = req.flash('success_messages');
-    res.locals.error_messages = req.flash('error_messages');
+// Middleware για να χειριστεί τα flash μηνύματα και να τα προσθέσει στο res.locals
+app.use((req, res, next) => {
+    res.locals.success_messages = req.flash('success');
+    res.locals.error_messages = req.flash('error');
     next();
 });
 
-
-// app.route('/searchText').get((req, res) => {
-//     res.render('search', { layout: 'layouts/main', style: "home.css", title: "Search", script: "home.js" })
-// })
-// app.route('/event').get((req, res) => {
-//     res.render('event', { layout: 'layouts/main', style: "event.css", title: "Event", script: "event.js" })
-// })
+app.use('/', index_router);
 
 module.exports = app;

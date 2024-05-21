@@ -15,6 +15,18 @@ for (let i = 0; i < sqlStatements.length; i++) {
     stmt.run();
 }
 
+// Populate admin table with 2 admin users
+var adminEmail = ['admin', 'theater'];
+var adminPassword = ['admin', 'theater'];
+
+for (let i = 0; i < adminEmail.length; i++) {
+    let hashedPassword = bcrypt.hashSync(adminPassword[i], 10);
+    let stmt = sql.prepare("INSERT INTO admin VALUES (null, ?, ?)");
+    stmt.run(adminEmail[i], hashedPassword);
+}
+
+
+
 var htmyBuildings = ['Βαρέα ΗΜΤΥ', 'Επέκταση ΗΜΤΥ', 'Πολυόροφο ΗΜΤΥ', 'Άλλο'];
 var arxitBuildings = ['Αρχιτεκτονική Βιβλιοθήκη', 'Κτίριο Β', 'Σχεδιαστήριο Σ1', 'Σχεδιαστήριο Σ2', 'Σχεδιαστήριο Σ3']
 var hmtyClasses = ['ΗΛ1', 'ΗΛ2', 'ΗΛ3', 'ΗΛ4', 'ΗΛ5', 'ΗΛ6', 'ΗΛ7', 'ΗΛ8'];
